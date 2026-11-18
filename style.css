@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Quicksand', sans-serif;
+    background-color:#fdf0f7;
+    background-image:url('img/Illustration of black cat with blossoms_ 2k Stream Background, Desktop Wallpaper.jpeg');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    color:#3d1536;
+}
+
+header{
+    background:#c86bb2;
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+nav{
+    background:#8e3b7e;
+    padding:15px;
+    text-align:center;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 15px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:#ffd6f0;
+    text-decoration:underline;
+}
+
+main{
+    max-width:900px;
+    margin:25px auto;
+    padding:30px;
+    background:rgba(255, 255, 255, 0.88);
+    border-radius:15px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-top:20px;
+    border-radius:15px;
+    border:1px solid #f0c4e2;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#c86bb2;
+    color:white;
+}
+
+th, td{
+    border:1px solid #f0c4e2;
+    padding:12px;
+    text-align:center;
+}
+
+form{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    border:1px solid #f0c4e2;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:10px;
+    font-family:'Quicksand', sans-serif;
+    border:1px solid #e3a8d1;
+    border-radius:8px;
+    color:#3d1536;
+}
+
+button{
+    margin-top:20px;
+    padding:12px;
+    width:100%;
+    border:none;
+    border-radius:10px;
+    background:#c86bb2;
+    color:white;
+    font-family:'Quicksand', sans-serif;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#8e3b7e;
+}
+
+td button{
+    width:auto;
+    margin-top:2px;
+    padding:6px 12px;
+    font-size:14px;
+}
+
+footer{
+    margin-top:40px;
+    background:#8e3b7e;
+    color:white;
+    text-align:center;
+    padding:15px;
+}

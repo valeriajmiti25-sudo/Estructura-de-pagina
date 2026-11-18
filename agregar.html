@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Producto</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Registro de Producto</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Productos</a>
+        <a href="agregar.html">Agregar Producto</a>
+    </nav>
+
+    <main>
+
+        <form id="formulario">
+
+            <label>Nombre del producto</label>
+            <input type="text" id="nombre" placeholder="Ingrese nombre">
+
+            <label>Categoría</label>
+            <input type="text" id="categoria" placeholder="Ingrese categoría">
+
+            <label>Descripción</label>
+            <textarea id="descripcion" rows="4"></textarea>
+
+            <label>Cantidad</label>
+            <input type="number" id="cantidad" placeholder="0">
+
+            <button type="submit">
+                Guardar Producto
+            </button>
+
+        </form>
+
+    </main>
+
+    <footer>
+        Sistema de Inventario
+    </footer>
+
+    <script>
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let nombre = document.getElementById("nombre").value.trim();
+            let categoria = document.getElementById("categoria").value.trim();
+            let descripcion = document.getElementById("descripcion").value.trim();
+            let cantidad = document.getElementById("cantidad").value;
+
+            // 1. Validar que no haya campos vacíos
+            if (nombre === "" || categoria === "" || cantidad === "") {
+                alert("Por favor, llena todos los campos obligatorios.");
+                return;
+            }
+
+            // 2. Validar que la cantidad no sea negativa
+            if (Number(cantidad) < 0) {
+                alert("La cantidad no puede ser negativa.");
+                return;
+            }
+
+            // Cargar productos guardados en el navegador
+            let productos = JSON.parse(localStorage.getItem("productos")) || [];
+
+            // 3. Validar que el producto no esté repetido
+            for (let i = 0; i < productos.length; i++) {
+                if (productos[i].nombre.toLowerCase() === nombre.toLowerCase()) {
+                    alert("Este producto ya existe en el inventario.");
+                    return;
+                }
+            }
+
+            // Si dejan la descripción vacía, se rellena sola
+            if (descripcion === "") {
+                descripcion = "Sin descripción";
+            }
+
+            // Guardar el producto
+            let nuevoProducto = {
+                nombre: nombre,
+                categoria: categoria,
+                descripcion: descripcion,
+                cantidad: Number(cantidad)
+            };
+
+            productos.push(nuevoProducto);
+            localStorage.setItem("productos", JSON.stringify(productos));
+
+            alert("Producto guardado correctamente.");
+            document.getElementById("formulario").reset();
+        });
+    </script>
+
+</body>
+
+</html>

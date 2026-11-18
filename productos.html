@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Productos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Inventario de Productos</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Productos</a>
+        <a href="agregar.html">Agregar Producto</a>
+    </nav>
+
+    <main>
+
+        <div style="margin-bottom: 15px;">
+            <button type="button" onclick="exportarExcel()">Exportar a Excel</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Existencia</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+            </tbody>
+        </table>
+
+    </main>
+
+    <footer>
+        Sistema de Inventario
+    </footer>
+
+    <script>
+        // Si es la primera vez que se abre, carga tus 4 productos originales
+        if (localStorage.getItem("productos") === null) {
+            let productosIniciales = [
+                { nombre: "Lápiz", categoria: "Papelería", descripcion: "Lápiz de grafito", cantidad: 120 },
+                { nombre: "Cuaderno", categoria: "Papelería", descripcion: "Cuaderno profesional", cantidad: 50 },
+                { nombre: "Borrador", categoria: "Papelería", descripcion: "Goma de borrar", cantidad: 35 },
+                { nombre: "Regla", categoria: "Papelería", descripcion: "Regla de 30 cm", cantidad: 40 }
+            ];
+            localStorage.setItem("productos", JSON.stringify(productosIniciales));
+        }
+
+        // Muestra todos los productos guardados en la tabla
+        function mostrarProductos() {
+            let productos = JSON.parse(localStorage.getItem("productos")) || [];
+            let cuerpoTabla = document.getElementById("cuerpo-tabla");
+            cuerpoTabla.innerHTML = "";
+
+            if (productos.length === 0) {
+                cuerpoTabla.innerHTML = "<tr><td colspan='6'>No hay productos registrados.</td></tr>";
+                return;
+            }
+
+            for (let i = 0; i < productos.length; i++) {
+                let fila = "<tr>" +
+                    "<td>" + (i + 1) + "</td>" +
+                    "<td>" + productos[i].nombre + "</td>" +
+                    "<td>" + productos[i].categoria + "</td>" +
+                    "<td>" + (productos[i].descripcion || "Sin descripción") + "</td>" +
+                    "<td>" + productos[i].cantidad + "</td>" +
+                    "<td>" +
+                        "<button type='button' onclick='modificarProducto(" + i + ")'>Modificar</button> " +
+                        "<button type='button' onclick='eliminarProducto(" + i + ")'>Eliminar</button>" +
+                    "</td>" +
+                "</tr>";
+                cuerpoTabla.innerHTML += fila;
+            }
+        }
+
+        // Modificar producto con validaciones
+        function modificarProducto(indice) {
+            let productos = JSON.parse(localStorage.getItem("productos")) || [];
+            let actual = productos[indice];
+
+            let nuevoNombre = prompt("Nuevo nombre del producto:", actual.nombre);
+            if (nuevoNombre === null) return;
+            nuevoNombre = nuevoNombre.trim();
+
+            let nuevaCategoria = prompt("Nueva categoría:", actual.categoria);
+            if (nuevaCategoria === null) return;
+            nuevaCategoria = nuevaCategoria.trim();
+
+            let nuevaDescripcion = prompt("Nueva descripción:", actual.descripcion || "Sin descripción");
+            if (nuevaDescripcion === null) return;
+            nuevaDescripcion = nuevaDescripcion.trim();
+
+            let nuevaCantidad = prompt("Nueva cantidad:", actual.cantidad);
+            if (nuevaCantidad === null) return;
+
+            if (nuevoNombre === "" || nuevaCategoria === "" || nuevaCantidad.trim() === "") {
+                alert("Error: No puedes dejar campos obligatorios vacíos.");
+                return;
+            }
+
+            if (isNaN(nuevaCantidad) || Number(nuevaCantidad) < 0) {
+                alert("Error: La cantidad debe ser un número válido y no puede ser negativa.");
+                return;
+            }
+
+            for (let i = 0; i < productos.length; i++) {
+                if (i !== indice && productos[i].nombre.toLowerCase() === nuevoNombre.toLowerCase()) {
+                    alert("Error: Ya existe otro producto con ese nombre.");
+                    return;
+                }
+            }
+
+            if (nuevaDescripcion === "") {
+                nuevaDescripcion = "Sin descripción";
+            }
+
+            productos[indice] = {
+                nombre: nuevoNombre,
+                categoria: nuevaCategoria,
+                descripcion: nuevaDescripcion,
+                cantidad: Number(nuevaCantidad)
+            };
+
+            localStorage.setItem("productos", JSON.stringify(productos));
+            alert("Producto modificado correctamente.");
+            mostrarProductos();
+        }
+
+        // Eliminar producto con confirmación
+        function eliminarProducto(indice) {
+            let productos = JSON.parse(localStorage.getItem("productos")) || [];
+            let confirmar = confirm("¿Seguro que deseas eliminar '" + productos[indice].nombre + "'?");
+
+            if (confirmar) {
+                productos.splice(indice, 1);
+                localStorage.setItem("productos", JSON.stringify(productos));
+                alert("Producto eliminado.");
+                mostrarProductos();
+            }
+        }
+
+        // Exportar la tabla a un archivo de Excel
+        function exportarExcel() {
+            let productos = JSON.parse(localStorage.getItem("productos")) || [];
+
+            if (productos.length === 0) {
+                alert("No hay productos para exportar.");
+                return;
+            }
+
+            let tablaExcel = "<table border='1'>" +
+                "<tr><th>ID</th><th>Producto</th><th>Categoría</th><th>Descripción</th><th>Existencia</th></tr>";
+
+            for (let i = 0; i < productos.length; i++) {
+                tablaExcel += "<tr>" +
+                    "<td>" + (i + 1) + "</td>" +
+                    "<td>" + productos[i].nombre + "</td>" +
+                    "<td>" + productos[i].categoria + "</td>" +
+                    "<td>" + (productos[i].descripcion || "Sin descripción") + "</td>" +
+                    "<td>" + productos[i].cantidad + "</td>" +
+                "</tr>";
+            }
+            tablaExcel += "</table>";
+
+            let archivo = new Blob(["\ufeff" + tablaExcel], { type: "application/vnd.ms-excel" });
+            let enlace = document.createElement("a");
+            enlace.href = URL.createObjectURL(archivo);
+            enlace.download = "Reporte_Inventario.xls";
+            enlace.click();
+        }
+
+        // Ejecutar al cargar la página
+        mostrarProductos();
+    </script>
+
+</body>
+
+</html>
